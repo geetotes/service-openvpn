@@ -1,0 +1,69 @@
+#!/bin/bash
+
+#don't forget to call functions!
+. /etc/rc.d/init.d/functions
+
+
+CONFIGFILE="/etc/openvpn/client.conf"
+OPTIONS="$CONFIGFILE"
+PIDFILE=`awk -F= '/^dbpath\s=\s/{print $2}' "$CONFIGFILE"`
+
+#openvpn=`/sbin/openvpn`
+
+start()
+{
+  echo -n "Starting openvpn: "
+  openvpn $OPTIONS
+  RETVAL=$?
+  echo
+  if [ $RETVAL -eq 0 ]; then
+    touch /var/lock/subsys/openvpn
+    echo "                    .... Started"
+  else
+    echo "                    Failed"
+  fi
+  
+}
+
+stop()
+{
+  echo -n " Stopping openvpn: "
+  killproc openvpn
+  RETVAL=$?
+  echo
+  if [ $RETVAL -eq 0 ]; then
+    rm -f /var/lock/subsys/openvpn
+    echo "                    ....Stoped"
+  else
+    echo "                    ....Failed"
+  fi
+}
+
+restart () {
+	stop
+	start
+}
+
+ulimit -n 12000
+RETVAL=0
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    restart
+    ;;
+  status)
+    status openvpn
+    RETVAL=$?
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status|restart}"
+    RETVAL=1
+esac
+
+exit $RETVAL
