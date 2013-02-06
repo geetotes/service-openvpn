@@ -18,10 +18,10 @@ Install Instructions
 3. Reload the scripts in `/etc/init.d`
 
 
-  `chown root:root openvpn'
-  `chmod a+x openvpn`
-  `ln -s openvpn /etc/init.d/openvpn`
-  `systemctl daemon-reload`
+````chown root:root openvpn
+chmod a+x openvpn
+ln -s openvpn /etc/init.d/openvpn
+systemctl daemon-reload````
 
 
 Call the Openvpn client as a service now with `service openvpn`
